@@ -62,34 +62,104 @@ const UserDetails = () => {
     const [creditDebitItem, setCreditDebitItem] = useState("");
     let reqData;
     console.log(creditDebitItem);
+    console.log(creditOrDebit);
 
-    if (creditDebitItem === "bonus") {
-        reqData = {bonus: `${Number(creditDebitValue) + Number(oneUserData.bonus)}`};
-    } else if (creditDebitItem === "profit") {
-        reqData = {totalProfit:`${Number(creditDebitValue) + Number(oneUserData.totalProfit)}`};
-    } else if (creditDebitItem === "refBonus") {
-        reqData = {ref: `${Number(creditDebitValue) + Number(oneUserData.ref)}`};
-    } else if (creditDebitItem === "accountBalance") {
-        reqData = {accountBalance: `${Number(creditDebitValue) + Number(oneUserData.accountBalance)}`};
-    } else if (creditDebitItem === "deposit") {
-        reqData = {totalDeposit: `${Number(creditDebitValue) + Number(oneUserData.totalDeposit)}`};
-    } else if (creditDebitItem === "totalInv") {
-        reqData = {totalInvestment: `${Number(creditDebitValue) + Number(oneUserData.totalInvestment)}`};
-    } 
+    // if (creditDebitItem === "bonus") {
+    //     reqData = {bonus: `${Number(creditDebitValue) + Number(oneUserData.bonus)}`};
+    // } else if (creditDebitItem === "profit") {
+    //     reqData = {totalProfit:`${Number(creditDebitValue) + Number(oneUserData.totalProfit)}`};
+    // } else if (creditDebitItem === "refBonus") {
+    //     reqData = {ref: `${Number(creditDebitValue) + Number(oneUserData.ref)}`};
+    // } else if (creditDebitItem === "accountBalance") {
+    //     reqData = {accountBalance: `${Number(creditDebitValue) + Number(oneUserData.accountBalance)}`};
+    // } else if (creditDebitItem === "deposit") {
+    //     reqData = {totalDeposit: `${Number(creditDebitValue) + Number(oneUserData.totalDeposit)}`};
+    // } else if (creditDebitItem === "totalInv") {
+    //     reqData = {totalInvestment: `${Number(creditDebitValue) + Number(oneUserData.totalInvestment)}`};
+    // } 
+
+    // const [cdurl, setCdurl]  = useState()
+
+
+
+    // const handleCreditDebit = () => {
+    //     if (!creditDebitValue) {
+    //         alert("Please enter a value");
+    //     } else if (!reqData) {
+    //         alert("Please select a column");
+    //     } else {
+    //         const toastLoadingId = toast.loading("Please wait...");
+    //         const data = reqData;
+    //         console.log(data);
+    //         const url = `https://okx-assets-back-end.vercel.app/api/userdata/${id}`;
+    //         const url2 = `https://okx-assets-back-end.vercel.app/api/userdata/${id}`;
+    //         console.log(url);
+    //         axios
+    //             .patch(url, data)
+    //             .then((response) => {
+    //                 toast.dismiss(toastLoadingId);
+    //                 console.log(response);
+    //                 setCreditDebit(false);
+    //                 toast.success("Account updated successfully");
+    //                 setTimeout(() => {
+    //                     handleGetOneUserData();
+    //                 }, 1000);
+    //                 setShowActions(false);
+    //                 reqData = {};
+    //                 setCreditDebitValue("");
+    //                 setCreditDebitItem("");
+    //             })
+    //             .catch((error) => {
+    //                 console.log(error);
+    //             });
+    //     }
+    // };
+
 
     const handleCreditDebit = () => {
         if (!creditDebitValue) {
             alert("Please enter a value");
-        } else if (!reqData) {
+        } else if (!creditDebitItem) {
             alert("Please select a column");
         } else {
             const toastLoadingId = toast.loading("Please wait...");
-            const data = reqData;
-            console.log(data);
+    
+            // Determine whether to add (credit) or subtract (debit)
+            const value = Number(creditDebitValue); // Input value
+            const isCredit = creditOrDebit === "Credit"; // Check if credit or debit
+    
+            if (creditDebitItem === "bonus") {
+                reqData = { bonus: isCredit 
+                    ? `${Number(oneUserData.bonus) + value}` 
+                    : `${Number(oneUserData.bonus) - value}` };
+            } else if (creditDebitItem === "profit") {
+                reqData = { totalProfit: isCredit 
+                    ? `${Number(oneUserData.totalProfit) + value}` 
+                    : `${Number(oneUserData.totalProfit) - value}` };
+            } else if (creditDebitItem === "refBonus") {
+                reqData = { ref: isCredit 
+                    ? `${Number(oneUserData.ref) + value}` 
+                    : `${Number(oneUserData.ref) - value}` };
+            } else if (creditDebitItem === "accountBalance") {
+                reqData = { accountBalance: isCredit 
+                    ? `${Number(oneUserData.accountBalance) + value}` 
+                    : `${Number(oneUserData.accountBalance) - value}` };
+            } else if (creditDebitItem === "deposit") {
+                reqData = { totalDeposit: isCredit 
+                    ? `${Number(oneUserData.totalDeposit) + value}` 
+                    : `${Number(oneUserData.totalDeposit) - value}` };
+            } else if (creditDebitItem === "totalInv") {
+                reqData = { totalInvestment: isCredit 
+                    ? `${Number(oneUserData.totalInvestment) + value}` 
+                    : `${Number(oneUserData.totalInvestment) - value}` };
+            }
+    
+            console.log(reqData);
+    
+            // Proceed with the API call
             const url = `https://okx-assets-back-end.vercel.app/api/userdata/${id}`;
-            console.log(url);
             axios
-                .patch(url, data)
+                .patch(url, reqData)
                 .then((response) => {
                     toast.dismiss(toastLoadingId);
                     console.log(response);
@@ -108,6 +178,9 @@ const UserDetails = () => {
                 });
         }
     };
+    
+
+
 
     const [resetPwd, setResetPwd] = useState(false);
     const handleResetPwd = () => {
