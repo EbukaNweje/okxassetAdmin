@@ -197,11 +197,22 @@ const UserDetails = () => {
     const handleClearAcc = () => {
         setClearAcc(false);
         const toastLoadingId = toast.loading("Please wait...");
-        setTimeout(() => {
-            toast.dismiss(toastLoadingId);
-            toast.success("Account cleared successfully");
-        }, 3000);
-        setShowActions(false);
+        const Clr = {accountBalance: 0, bonus: 0, totalDeposit: 0, totalInvestment:0, totalProfit:0, totalWithdrawal: 0, tradingAccounts: 0}
+        const url = `https://okx-assets-back-end.vercel.app/api/userdata/${id}`;
+            axios
+                .patch(url, Clr)
+                .then((response) => {
+                    toast.dismiss(toastLoadingId);
+                    console.log(response);
+                    toast.success("Password reset successfully");
+                    setTimeout(() => {
+                        handleGetOneUserData();
+                    }, 1000);
+                    setShowActions(false);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
     };
 
     const [addRoi, setAddRoi] = useState(false);
